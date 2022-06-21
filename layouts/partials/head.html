@@ -61,10 +61,19 @@
 <script defer src="{{ $eurekaJS.Permalink }}"></script>
 
 {{ $googleFonts := "" }}
-{{ range $index, $value := partial "utils/get-style-fonts" (dict "context" . "param" "googleFonts") }}
-{{ with $value }}
-{{ $googleFonts = print $googleFonts "family=" .  "&" }}
-{{ end }}
+{{ range $index, $value := partial "utils/get-style-fonts" ( dict "context" . "params" (slice "googleFonts" "src")) }}
+{{/* the result is like { {name, src}, {name, googleFonts}, ... } */}}
+  {{ with $value }}
+    {{ with .googleFonts }}
+    {{ $googleFonts = print $googleFonts "family=" .  "&" }}
+    {{ else }}
+      {{ with .src }}
+      <link rel="preload" 
+        href="{{ printf . }}"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+      {{ end }}
+    {{ end }}
+  {{ end }}
 {{ end }}
 
 {{ with $googleFonts }}

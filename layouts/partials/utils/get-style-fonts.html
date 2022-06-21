@@ -1,9 +1,10 @@
 {{ $style := (index .context.Site.Data.styles (.context.Site.Params.style | default "default")) }}
 {{ $result := slice }}
-{{ range $style.fonts }}
-  {{ $item := index . $.param }}
-  {{ if $item }}
-    {{ $result = $result | append $item }}
+{{ range $i, $d := $style.fonts }}
+  {{ range $_i, $p := $.params }}
+    {{ if isset $d . }}
+      {{ $result = $result | append (dict . (index $d .)) }}
+    {{ end }}
   {{ end }}
 {{ else }}
   {{/* TODO: use realtime location */}}
