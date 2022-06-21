@@ -60,29 +60,34 @@
 {{- $eurekaJS := resources.Get "js/eureka.js" | resources.ExecuteAsTemplate "js/eureka.js" . | minify | fingerprint "sha384" }}
 <script defer src="{{ $eurekaJS.Permalink }}"></script>
 
-{{ $googleFonts := "" }}
-{{ range $index, $value := partial "utils/get-style-fonts" ( dict "context" . "params" (slice "googleFonts" "src")) }}
+{{- $googleFonts := "" }}
+{{- $Fonts_url := slice }}
+{{- range $index, $value := partial "utils/get-style-fonts" ( dict "context" . "params" (slice "googleFonts" "src")) }}
 {{/* the result is like { {name, src}, {name, googleFonts}, ... } */}}
-  {{ with $value }}
-    {{ with .googleFonts }}
-    {{ $googleFonts = print $googleFonts "family=" .  "&" }}
-    {{ else }}
-      {{ with .src }}
-      <link rel="preload" 
+  {{- with $value }}
+    {{- with .googleFonts }}
+    {{- $googleFonts = print $googleFonts "family=" .  "&" }}
+    {{- else }}
+      {{- with .src }}
+        {{- $Fonts_url = $Fonts_url | append . }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- range $Fonts_url }}
+<link rel="preload" 
         href="{{ printf . }}"
         as="style" onload="this.onload=null;this.rel='stylesheet'">
-      {{ end }}
-    {{ end }}
-  {{ end }}
-{{ end }}
+{{- end }}
 
-{{ with $googleFonts }}
+{{- with $googleFonts }}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload"
   href="{{ printf "https://fonts.googleapis.com/css2?%sdisplay=swap" . }}"
   as="style" onload="this.onload=null;this.rel='stylesheet'">
-{{ end }}
+{{- end }}
 
 {{- $assets := .Site.Data.assets }}
 
