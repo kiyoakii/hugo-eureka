@@ -2,15 +2,15 @@
   class="text-tertiary-text not-prose mt-2 flex flex-row flex-wrap items-center"
 >
   <div class="me-6 my-2">
-    <i class="fas fa-calendar me-1"></i>
+    {{/*  <i class="fas fa-calendar me-1"></i>  */}}
     <span
       >{{ .Date.Format (.Site.Params.dateFormat | default "2006-01-02") }}</span
     >
   </div>
-  <div class="me-6 my-2">
+  {{/*  <div class="me-6 my-2">
     <i class="fas fa-clock me-1"></i>
     <span>{{ i18n "readingTime" .ReadingTime }}</span>
-  </div>
+  </div>  */}}
 
   {{ with .GetTerms "categories" }}
     <div class="me-6 my-2">
